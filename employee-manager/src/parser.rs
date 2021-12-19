@@ -1,10 +1,14 @@
-// LANGUAGE:
-//   Lang ::= {0} (Add | List | Quit) '\n' {1}
-//   Quit ::= 'quit' {2}
-//   Add ::= 'add' {3} Name 'to' {4} Name
-//   List ::= 'list' {5} 'employees' {6} 'of' {7} Name
-//   Helo ::= 'help' {8}
-//   Name ::= <every sequence of word different from 'to'>
+// Token ID constants:
+//   Their order cannot change without changint the transition table as well.
+const T_QUIT : i8 = 0;
+const T_ADD : i8 = 1;
+const T_TO : i8 = 2;
+const T_LIST : i8 = 3;
+const T_EMPLOYEES : i8 = 4;
+const T_OF : i8 = 5;
+const T_NEWLINE : i8 = 6;
+const T_HELP : i8 = 8;
+const T_WORDS : i8 = 7;
 
 #[derive(Debug)]
 pub enum Command {
@@ -17,15 +21,15 @@ pub enum Command {
 
 fn token_id(token: &str) -> i8 {
     match token {
-        "quit" => 0,
-        "add" => 1,
-        "to" => 2,
-        "list" => 3,
-        "employees" => 4,
-        "of" => 5,
-        "\n" => 6,
-        "help" => 8,
-        _ => 7,
+        "quit" => T_QUIT,
+        "add" => T_ADD,
+        "to" => T_TO,
+        "list" => T_LIST,
+        "employees" => T_EMPLOYEES,
+        "of" => T_OF,
+        "\n" => T_NEWLINE,
+        "help" => T_HELP,
+        _ => T_WORDS,
     }
 }
 
@@ -36,15 +40,23 @@ fn append_token(to: &mut String, what: &str) {
     to.push_str(what);
 }
 
-
+// Language:
+//   Lang ::= {0} (Add | List | Quit) '\n' {1}
+//   Quit ::= 'quit' {2}
+//   Add ::= 'add' {3} Name 'to' {4} Name
+//   List ::= 'list' {5} 'employees' {6} 'of' {7} Name
+//   Helo ::= 'help' {8}
+//   Name ::= <every sequence of words different from other reserved tokens>
 pub fn parse(input: &str) -> Command {
     let mut state : i8 = 0;
     let mut cmd_id : i8 = -1;
     let mut arg1 = String::new();
     let mut arg2 = String::new();
+    // The transition table below is to be read like this:
+    //   table[current_state_id][current_token_it] = next_state_id
     let table = [
-        // 0   1   2   3   4   5   6   7: tokens
-        [  2,  3, -1,  5, -1, -1, -1, -1,  8], // state 0
+        // 0   1   2   3   4   5   6   7   8: token id
+        [  2,  3, -1,  5, -1, -1, -1, -1,  8], // state 0 initial
         [ -1, -1, -1, -1, -1, -1, -1, -1, -1], // state 1 accepting
         [ -1, -1, -1, -1, -1, -1,  1, -1, -1], // state 2 (quit)
         [ -1, -1,  4, -1, -1, -1, -1,  3, -1], // state 3 (add)
