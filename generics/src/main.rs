@@ -1,5 +1,6 @@
 use core::cmp::Ordering;
 use std::cmp::PartialOrd;
+use std::fmt;
 
 struct Point<T, U> {
     x: T,
@@ -39,6 +40,15 @@ impl<T: PartialEq, U: PartialEq> PartialEq for Point<T, U> {
     }
 }
 
+impl<T, U> fmt::Display for Point<T, U>
+    where T: fmt::Display,
+          U: fmt::Display
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "({}, {})", self.x, self.y)
+    }
+}
+
 fn largest<T: PartialOrd>(list: &[T]) -> &T {
     let mut largest = &list[0];
 
@@ -59,9 +69,11 @@ fn main() {
     let p1 = Point { x: 5, y: 10.4 };
     let p2 = Point { x: "Hello", y: 'c' };
 
-    let p3 = p1.mixup(p2);
+    println!("p1 = {}, p2 = {}", p1, p2);
 
-    println!("p3.x = {}, p3.y = {}", p3.x, p3.y);
+    let p3 = p1.mixup(p2);
+    println!("p3 = p1.mixup(p2) = {}", p3);
+
 
     // largest
     let number_list = vec![34, 50, 25, 100, 65];
