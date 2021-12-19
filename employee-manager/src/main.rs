@@ -25,8 +25,12 @@ fn main() {
             Command::Quit => {
                 return;
             },
-            Command::List{dept} => {
-                println!("");
+            Command::ListAll => {
+                println!();
+                org.print_all();
+            },
+            Command::ListDept{dept} => {
+                println!();
                 org.print_list(&dept);
             },
             Command::Add{person, dept} => {
@@ -35,6 +39,7 @@ fn main() {
             Command::Help => {
                 println!("\nAvailable commands:");
                 println!("  - Add <Name> to <Department>");
+                println!("  - List employees");
                 println!("  - List employees of <Department>");
                 println!("  - Help");
                 println!("  - Quit");
@@ -43,6 +48,6 @@ fn main() {
                 println!("|  No such command");
             },
         }
-        println!("");
+        println!();
     }
 }

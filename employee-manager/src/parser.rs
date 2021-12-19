@@ -13,7 +13,8 @@ const T_WORDS : i8 = 7;
 #[derive(Debug)]
 pub enum Command {
     Add {person: String, dept: String},
-    List {dept: String},
+    ListDept {dept: String},
+    ListAll,
     Quit,
     Help,
     NoSuchCommand,
@@ -44,7 +45,7 @@ fn append_token(to: &mut String, what: &str) {
 //   Lang ::= {0} (Add | List | Quit) '\n' {1}
 //   Quit ::= 'quit' {2}
 //   Add ::= 'add' {3} Name 'to' {4} Name
-//   List ::= 'list' {5} 'employees' {6} 'of' {7} Name
+//   List ::= 'list' {5} 'employees' {6} ('of' {7} Name)?
 //   Helo ::= 'help' {8}
 //   Name ::= <every sequence of words different from other reserved tokens>
 pub fn parse(input: &str) -> Command {
@@ -62,7 +63,7 @@ pub fn parse(input: &str) -> Command {
         [ -1, -1,  4, -1, -1, -1, -1,  3, -1], // state 3 (add)
         [ -1, -1, -1, -1, -1, -1,  1,  4, -1], // state 4 (to)
         [ -1, -1, -1, -1,  6, -1, -1, -1, -1], // state 5 (list)
-        [ -1, -1, -1, -1, -1,  7, -1, -1, -1], // state 6 (employees)
+        [ -1, -1, -1, -1, -1,  7,  1, -1, -1], // state 6 (employees)
         [ -1, -1, -1, -1, -1, -1,  1,  7, -1], // state 7 (of)
         [ -1, -1, -1, -1, -1, -1,  1, -1,  8], // state 8 (help)
     ];
@@ -83,7 +84,7 @@ pub fn parse(input: &str) -> Command {
             return Command::NoSuchCommand;
         }
         match tok_id {
-            0 | 1 | 3 | 8 => { cmd_id = tok_id; },
+            T_QUIT | T_ADD | T_LIST | T_OF | T_HELP => { cmd_id = tok_id; },
             _ => (),
         }
     }
@@ -91,10 +92,11 @@ pub fn parse(input: &str) -> Command {
     if state == 1 {
         println!("|    ACCEPTED");
         let cmd = match cmd_id {
-            0 => Command::Quit,
-            1 => Command::Add { person: arg1, dept: arg2 },
-            3 => Command::List { dept: arg1 },
-            8 => Command::Help,
+            T_QUIT => Command::Quit,
+            T_ADD => Command::Add { person: arg1, dept: arg2 },
+            T_LIST => Command::ListAll,
+            T_OF => Command::ListDept { dept: arg1 },
+            T_HELP => Command::Help,
             _ => Command::NoSuchCommand,
         };
         println!("|  Command: {:?}", cmd);
