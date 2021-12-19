@@ -1,10 +1,10 @@
 use std::io::{self, Write};
 
-mod parser;
 mod organization;
+mod parser;
 
-use parser::Command;
 use organization::Organization;
+use parser::Command;
 
 fn prompt_user_input() -> String {
     print!("> ");
@@ -21,18 +21,18 @@ fn run_command(org: &mut Organization, cmd: Command) {
     match cmd {
         Command::Quit => {
             std::process::exit(0);
-        },
+        }
         Command::ListAll => {
             println!();
             org.print_all();
-        },
-        Command::ListDept{dept} => {
+        }
+        Command::ListDept { dept } => {
             println!();
             org.print_list(&dept);
-        },
-        Command::Add{person, dept} => {
+        }
+        Command::Add { person, dept } => {
             org.add(person, dept);
-        },
+        }
         Command::Help => {
             println!("\nAvailable commands:");
             println!("  - Add <Name> to <Department>");
@@ -40,7 +40,7 @@ fn run_command(org: &mut Organization, cmd: Command) {
             println!("  - List employees of <Department>");
             println!("  - Help");
             println!("  - Quit");
-        },
+        }
     };
 }
 

@@ -1,19 +1,19 @@
 // Token ID constants:
 //   Their order cannot change without changint the transition table as well.
-const T_QUIT : i8 = 0;
-const T_ADD : i8 = 1;
-const T_TO : i8 = 2;
-const T_LIST : i8 = 3;
-const T_EMPLOYEES : i8 = 4;
-const T_OF : i8 = 5;
-const T_NEWLINE : i8 = 6;
-const T_HELP : i8 = 8;
-const T_WORDS : i8 = 7;
+const T_QUIT: i8 = 0;
+const T_ADD: i8 = 1;
+const T_TO: i8 = 2;
+const T_LIST: i8 = 3;
+const T_EMPLOYEES: i8 = 4;
+const T_OF: i8 = 5;
+const T_NEWLINE: i8 = 6;
+const T_HELP: i8 = 8;
+const T_WORDS: i8 = 7;
 
 #[derive(Debug)]
 pub enum Command {
-    Add {person: String, dept: String},
-    ListDept {dept: String},
+    Add { person: String, dept: String },
+    ListDept { dept: String },
     ListAll,
     Quit,
     Help,
@@ -48,8 +48,8 @@ fn append_token(to: &mut String, what: &str) {
 //   Helo ::= 'help' {8}
 //   Name ::= <every sequence of words different from other reserved tokens>
 pub fn parse(input: &str) -> Option<Command> {
-    let mut state : i8 = 0;
-    let mut cmd_id : i8 = -1;
+    let mut state: i8 = 0;
+    let mut cmd_id: i8 = -1;
     let mut arg1 = String::new();
     let mut arg2 = String::new();
     // The transition table below is to be read like this:
@@ -83,7 +83,9 @@ pub fn parse(input: &str) -> Option<Command> {
             return None;
         }
         match tok_id {
-            T_QUIT | T_ADD | T_LIST | T_OF | T_HELP => { cmd_id = tok_id; },
+            T_QUIT | T_ADD | T_LIST | T_OF | T_HELP => {
+                cmd_id = tok_id;
+            }
             _ => (),
         }
     }
@@ -92,7 +94,10 @@ pub fn parse(input: &str) -> Option<Command> {
         println!("|    ACCEPTED");
         let cmd = match cmd_id {
             T_QUIT => Some(Command::Quit),
-            T_ADD => Some(Command::Add { person: arg1, dept: arg2 }),
+            T_ADD => Some(Command::Add {
+                person: arg1,
+                dept: arg2,
+            }),
             T_LIST => Some(Command::ListAll),
             T_OF => Some(Command::ListDept { dept: arg1 }),
             T_HELP => Some(Command::Help),
@@ -104,4 +109,3 @@ pub fn parse(input: &str) -> Option<Command> {
     println!("|    NOT ACCEPTED");
     None
 }
-

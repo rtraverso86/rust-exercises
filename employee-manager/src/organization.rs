@@ -7,15 +7,13 @@ pub struct Organization {
 impl Organization {
     pub fn new() -> Organization {
         Organization {
-            departments : BTreeMap::new(),
+            departments: BTreeMap::new(),
         }
     }
 
     pub fn add(&mut self, person: String, dept: String) {
-       let dept_people = self.departments
-           .entry(dept)
-           .or_insert_with(BTreeSet::new);
-       dept_people.insert(person);
+        let dept_people = self.departments.entry(dept).or_insert_with(BTreeSet::new);
+        dept_people.insert(person);
     }
 
     pub fn print_list(&self, dept: &str) {
@@ -38,4 +36,3 @@ impl Organization {
         }
     }
 }
-
