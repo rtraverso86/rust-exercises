@@ -17,7 +17,6 @@ pub enum Command {
     ListAll,
     Quit,
     Help,
-    NoSuchCommand,
 }
 
 fn token_id(token: &str) -> i8 {
@@ -36,7 +35,7 @@ fn token_id(token: &str) -> i8 {
 
 fn append_token(to: &mut String, what: &str) {
     if !to.is_empty() {
-        to.push_str(" ");
+        to.push(' ');
     }
     to.push_str(what);
 }
@@ -48,7 +47,7 @@ fn append_token(to: &mut String, what: &str) {
 //   List ::= 'list' {5} 'employees' {6} ('of' {7} Name)?
 //   Helo ::= 'help' {8}
 //   Name ::= <every sequence of words different from other reserved tokens>
-pub fn parse(input: &str) -> Command {
+pub fn parse(input: &str) -> Option<Command> {
     let mut state : i8 = 0;
     let mut cmd_id : i8 = -1;
     let mut arg1 = String::new();
@@ -81,7 +80,7 @@ pub fn parse(input: &str) -> Command {
         state = table[state as usize][tok_id as usize];
         println!("|      => New State: {}", state);
         if state < 0 {
-            return Command::NoSuchCommand;
+            return None;
         }
         match tok_id {
             T_QUIT | T_ADD | T_LIST | T_OF | T_HELP => { cmd_id = tok_id; },
@@ -92,17 +91,17 @@ pub fn parse(input: &str) -> Command {
     if state == 1 {
         println!("|    ACCEPTED");
         let cmd = match cmd_id {
-            T_QUIT => Command::Quit,
-            T_ADD => Command::Add { person: arg1, dept: arg2 },
-            T_LIST => Command::ListAll,
-            T_OF => Command::ListDept { dept: arg1 },
-            T_HELP => Command::Help,
-            _ => Command::NoSuchCommand,
+            T_QUIT => Some(Command::Quit),
+            T_ADD => Some(Command::Add { person: arg1, dept: arg2 }),
+            T_LIST => Some(Command::ListAll),
+            T_OF => Some(Command::ListDept { dept: arg1 }),
+            T_HELP => Some(Command::Help),
+            _ => None,
         };
         println!("|  Command: {:?}", cmd);
         return cmd;
     }
     println!("|    NOT ACCEPTED");
-    Command::NoSuchCommand
+    None
 }
 

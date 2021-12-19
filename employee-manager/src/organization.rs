@@ -12,7 +12,9 @@ impl Organization {
     }
 
     pub fn add(&mut self, person: String, dept: String) {
-       let dept_people = self.departments.entry(dept).or_insert(BTreeSet::new());
+       let dept_people = self.departments
+           .entry(dept)
+           .or_insert_with(BTreeSet::new);
        dept_people.insert(person);
     }
 
