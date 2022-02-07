@@ -7,6 +7,4 @@ edition = "2021"
 
 [dependencies]
 
-[target.aarch64-unknown-linux-musl]
-#linker = "aarch64-unknown-linux-musl"
 
