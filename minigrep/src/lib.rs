@@ -9,15 +9,26 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("not enough arguments");
-        }
-        let query = args[1].clone();
-        let filename = args[2].clone();
+    pub fn new(mut args: env::Args) -> Result<Config, &'static str> {
+        args.next(); // skip executable's name
+
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Argument 1 missing: query string"),
+        };
+
+        let filename = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Argument 2 missing: file name"),
+        };
+
         let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
-    
-        Ok(Config { query, filename, case_sensitive })
+
+        Ok(Config {
+            query,
+            filename,
+            case_sensitive,
+        })
     }
 }
 
