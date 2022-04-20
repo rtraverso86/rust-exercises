@@ -18,11 +18,11 @@ async fn main() {
 
     loop {
         // The second item contains the IP and port of the new connection.
-        let (socket, _) = listener.accept().await.unwrap();
+        let (socket, who) = listener.accept().await.unwrap();
         // Clone the handle to the hash map.
         let db = db.clone();
 
-        println!("Accepted");
+        println!("[{}] accepted", &who);
 
         // A new task is spawned for each inbound socket. The socket is
         // moved to the new task and processed there.
@@ -37,6 +37,7 @@ async fn process(socket: TcpStream, db : Db) {
 
     // Connection, provided by `mini-redis`, handles parsing frames from
     // the socket
+    let peer = socket.peer_addr().unwrap();
     let mut connection = Connection::new(socket);
 
     // Use `read_frame` to receive a command from the connection.
@@ -46,6 +47,7 @@ async fn process(socket: TcpStream, db : Db) {
                 let mut db = db.lock().unwrap();
                 // The value is stored as `Vec<u8>`
                 db.insert(cmd.key().to_string(), cmd.value().clone());
+                println!("[{}] {:?} = OK", &peer, cmd);
                 Frame::Simple("OK".to_string())
             }
             Get(cmd) => {
@@ -54,8 +56,10 @@ async fn process(socket: TcpStream, db : Db) {
                     // `Frame::Bulk` expects data to be of type `Bytes`. This
                     // type will be covered later in the tutorial. For now,
                     // `&Vec<u8>` is converted to `Bytes` using `into()`.
+                    println!("[{}] {:?} = {:?}", &peer, cmd, &value);
                     Frame::Bulk(value.clone().into())
                 } else {
+                    println!("[{}] {:?} = nil", &peer, cmd);
                     Frame::Null
                 }
             }
