@@ -9,7 +9,7 @@ async fn main() -> io::Result<()> {
         let (mut socket, _)  = listener.accept().await?;
         let peer = socket.peer_addr().unwrap();
         tokio::spawn(async move {
-            let (mut rx, mut tx) = io::split(socket);
+            let (mut rx, mut tx) = socket.split();
             if io::copy(&mut rx, &mut tx).await.is_err() {
                 eprintln!("[{}] failed to copy", &peer);
             }
