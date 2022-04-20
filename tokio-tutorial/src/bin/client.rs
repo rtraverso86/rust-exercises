@@ -63,7 +63,7 @@ async fn main() {
         tx.send(cmd).await.unwrap();
 
         // Await the response
-        let res = resp_rx.await;
+        let res = resp_rx.await.unwrap();
         println!("GOT = {:?}", res);
     });
 
@@ -79,7 +79,7 @@ async fn main() {
         tx2.send(cmd).await.unwrap();
 
         // Await the response
-        let res = resp_rx.await;
+        let res = resp_rx.await.unwrap();
         println!("GOT = {:?}", res);
     });
 
