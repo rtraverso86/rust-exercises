@@ -10,6 +10,7 @@ async fn main() -> io::Result<()> {
     tokio::spawn(async move {
         wr.write_all(b"hello\r\n").await?;
         wr.write_all(b"world\r\n").await?;
+        wr.shutdown().await?;
 
         // Sometimes, the rust type inferencer needs
         // a little help
