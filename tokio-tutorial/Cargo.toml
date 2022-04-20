@@ -7,3 +7,7 @@ edition = "2021"
 tokio = { version = "1", features = ["full"] }
 mini-redis = "0.4"
 bytes = "1"
+
+# needed by mini-tokio of future-delay.rs example
+futures = "0.3"
+crossbeam = "0.8"
