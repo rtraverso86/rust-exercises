@@ -11,3 +11,6 @@ bytes = "1"
 # needed by mini-tokio of future-delay.rs example
 futures = "0.3"
 crossbeam = "0.8"
+
+# needed by streams.rs example
+tokio-stream = "0.1"
