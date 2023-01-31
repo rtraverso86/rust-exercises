@@ -47,7 +47,7 @@ linker = "aarch64-linux-musl-ld"
 Finally, add the target with rustup:
 
 ```bash
-rustup add target aarch64-unknown-linux-musl
+rustup target add aarch64-unknown-linux-musl
 ```
 
 From now on, the project may be compiled for Alpine aarch64 with the cargo command:
