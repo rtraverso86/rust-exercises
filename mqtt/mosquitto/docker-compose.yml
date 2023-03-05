@@ -1,0 +1,8 @@
+# docker run -it --rm -p 1883:1883 -v $PWD/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:Z --name mos eclipse-mosquitto:2.0.11
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2.0.11
+    ports:
+      - "1883:1883"
+    volumes:
+      - "./mosquitto.conf:/mosquitto/config/mosquitto.conf:Z"
